@@ -12,4 +12,6 @@ interface BookService {
 
     fun create(toBookModel: BookModel): BookModel
 
+    fun delete(bookId: Long)
+
 }

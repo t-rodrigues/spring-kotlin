@@ -27,4 +27,10 @@ class BookServiceImpl(
         return bookRepository.save(bookModel)
     }
 
+    override fun delete(bookId: Long) {
+        val book = getBookById(bookId)
+        book.status = BookStatus.DELETED
+        bookRepository.save(book)
+    }
+
 }

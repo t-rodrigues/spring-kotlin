@@ -41,5 +41,11 @@ class BookController(
         return ResponseEntity.status(HttpStatus.CREATED).body(bookModel);
     }
 
+    @DeleteMapping("/{bookId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteBook(@PathVariable bookId: Long) {
+        bookService.delete(bookId)
+    }
+
 }
 
