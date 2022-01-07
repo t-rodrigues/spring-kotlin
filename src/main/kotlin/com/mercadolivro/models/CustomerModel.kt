@@ -1,4 +1,4 @@
-package com.mercadolivro.mercadolivro.models
+package com.mercadolivro.models
 
 import javax.persistence.*
 

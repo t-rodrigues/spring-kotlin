@@ -1,6 +1,6 @@
-package com.mercadolivro.mercadolivro.repositories
+package com.mercadolivro.repositories
 
-import com.mercadolivro.mercadolivro.models.CustomerModel
+import com.mercadolivro.models.CustomerModel
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 

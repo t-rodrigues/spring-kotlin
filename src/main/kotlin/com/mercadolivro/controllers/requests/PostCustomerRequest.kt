@@ -1,4 +1,4 @@
-package com.mercadolivro.mercadolivro.controllers.requests
+package com.mercadolivro.controllers.requests
 
 data class PostCustomerRequest(
     var name: String,

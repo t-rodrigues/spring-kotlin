@@ -1,6 +1,6 @@
-package com.mercadolivro.mercadolivro.services
+package com.mercadolivro.services
 
-import com.mercadolivro.mercadolivro.models.CustomerModel
+import com.mercadolivro.models.CustomerModel
 
 interface CustomerService {
 
