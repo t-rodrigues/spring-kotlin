@@ -9,7 +9,7 @@ data class BookModel(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Long? = null,
     var title: String,
     var price: BigDecimal,
 

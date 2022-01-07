@@ -1,0 +1,29 @@
+package com.mercadolivro.controllers
+
+import com.mercadolivro.controllers.requests.PostBookRequest
+import com.mercadolivro.extension.toBookModel
+import com.mercadolivro.services.BookService
+import com.mercadolivro.services.CustomerService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
+@RestController
+@RequestMapping("/books")
+class BookController(
+    var bookService: BookService,
+    var customerService: CustomerService
+) {
+
+    @PostMapping
+    fun createBook(@RequestBody request: PostBookRequest): ResponseEntity<Any> {
+        val customer = customerService.getCustomerById(request.customerId)
+        var bookModel = bookService.create(request.toBookModel(customer))
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookModel);
+    }
+
+}
