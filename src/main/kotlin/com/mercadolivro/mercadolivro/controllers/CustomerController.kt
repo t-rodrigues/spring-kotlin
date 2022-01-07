@@ -39,7 +39,7 @@ class CustomerController(
     fun updateCustomer(
         @PathVariable customerId: Long, @RequestBody customer: PutCustomerRequest
     ): ResponseEntity<Void> {
-        val customerModel = customerService.update(customer.toCustomerModel(customerId))
+        customerService.update(customer.toCustomerModel(customerId))
 
         return ResponseEntity.noContent().build()
     }
