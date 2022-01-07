@@ -10,7 +10,9 @@ interface BookService {
 
     fun getBookById(bookId: Long): BookModel
 
-    fun create(toBookModel: BookModel): BookModel
+    fun create(bookModel: BookModel): BookModel
+
+    fun update(bookModel: BookModel)
 
     fun delete(bookId: Long)
 
