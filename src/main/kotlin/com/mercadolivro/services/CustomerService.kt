@@ -14,4 +14,6 @@ interface CustomerService {
 
     fun delete(customerId: Long)
 
+    fun emailAvailable(email: String): Boolean
+
 }

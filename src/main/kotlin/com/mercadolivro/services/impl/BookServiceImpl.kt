@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class BookServiceImpl(
-    val bookRepository: BookRepository
+    private val bookRepository: BookRepository
 ) : BookService {
 
     override fun getBooks(pageable: Pageable): Page<BookModel> {

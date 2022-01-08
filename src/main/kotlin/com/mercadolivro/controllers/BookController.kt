@@ -11,8 +11,8 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/books")
@@ -27,10 +27,10 @@ class BookController(
     }
 
     @GetMapping("/active")
-    fun getActiveBooks(@PageableDefault(page = 0, size = 15) pageable: Pageable): ResponseEntity<Page<BookResponse>> {
+    fun getActiveBooks(@PageableDefault(page = 0, size = 15) pageable: Pageable): Page<BookResponse> {
         var books = bookService.getActiveBooks(pageable)
 
-        return ResponseEntity.ok(books.map { it.toResponse() })
+        return books.map { it.toResponse() }
     }
 
     @GetMapping("/{bookId}")
@@ -39,15 +39,17 @@ class BookController(
     }
 
     @PostMapping
-    fun createBook(@RequestBody request: PostBookRequest): ResponseEntity<BookResponse> {
+    @ResponseStatus(HttpStatus.CREATED)
+    fun createBook(@RequestBody @Valid request: PostBookRequest): BookResponse {
         val customer = customerService.getCustomerById(request.customerId)
         var bookModel = bookService.create(request.toBookModel(customer))
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(bookModel.toResponse());
+        return bookModel.toResponse();
     }
 
     @PutMapping("/{bookId}")
-    fun updateBook(@PathVariable bookId: Long, @RequestBody request: PutBookRequest) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun updateBook(@PathVariable bookId: Long, @RequestBody @Valid request: PutBookRequest) {
         val book = bookService.getBookById(bookId)
         bookService.update(request.toBookModel(book))
     }
