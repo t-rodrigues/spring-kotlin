@@ -5,6 +5,8 @@ import com.mercadolivro.models.BookModel
 import com.mercadolivro.models.CustomerModel
 import com.mercadolivro.repositories.BookRepository
 import com.mercadolivro.services.BookService
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -12,12 +14,12 @@ class BookServiceImpl(
     val bookRepository: BookRepository
 ) : BookService {
 
-    override fun getBooks(): List<BookModel> {
-        return bookRepository.findAll()
+    override fun getBooks(pageable: Pageable): Page<BookModel> {
+        return bookRepository.findAll(pageable)
     }
 
-    override fun getActiveBooks(): List<BookModel> {
-        return bookRepository.findByStatus(BookStatus.ACTIVE)
+    override fun getActiveBooks(pageable: Pageable): Page<BookModel> {
+        return bookRepository.findByStatus(BookStatus.ACTIVE, pageable)
     }
 
     override fun getBookById(bookId: Long): BookModel {
