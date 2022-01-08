@@ -2,8 +2,9 @@ package com.mercadolivro.controllers
 
 import com.mercadolivro.controllers.requests.PostCustomerRequest
 import com.mercadolivro.controllers.requests.PutCustomerRequest
+import com.mercadolivro.controllers.responses.CustomerResponse
 import com.mercadolivro.extension.toCustomerModel
-import com.mercadolivro.models.CustomerModel
+import com.mercadolivro.extension.toResponse
 import com.mercadolivro.services.CustomerService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,23 +17,23 @@ class CustomerController(
 ) {
 
     @GetMapping
-    fun getCustomers(@RequestParam name: String?): ResponseEntity<List<CustomerModel>> {
+    fun getCustomers(@RequestParam name: String?): ResponseEntity<List<CustomerResponse>> {
         val customers = this.customerService.getCustomers(name)
-        return ResponseEntity.ok(customers)
+        return ResponseEntity.ok(customers.map { it.toResponse() })
     }
 
     @GetMapping("/{customerId}")
-    fun getCustomerById(@PathVariable customerId: Long): ResponseEntity<CustomerModel> {
+    fun getCustomerById(@PathVariable customerId: Long): ResponseEntity<CustomerResponse> {
         val customerModel = customerService.getCustomerById(customerId)
 
-        return ResponseEntity.ok(customerModel)
+        return ResponseEntity.ok(customerModel.toResponse())
     }
 
     @PostMapping
-    fun createCustomer(@RequestBody customer: PostCustomerRequest): ResponseEntity<CustomerModel> {
+    fun createCustomer(@RequestBody customer: PostCustomerRequest): ResponseEntity<CustomerResponse> {
         val customerModel = customerService.create(customer.toCustomerModel())
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(customerModel)
+        return ResponseEntity.status(HttpStatus.CREATED).body(customerModel.toResponse())
     }
 
     @PutMapping("/{customerId}")
