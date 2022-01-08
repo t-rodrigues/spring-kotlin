@@ -2,8 +2,9 @@ package com.mercadolivro.controllers
 
 import com.mercadolivro.controllers.requests.PostBookRequest
 import com.mercadolivro.controllers.requests.PutBookRequest
+import com.mercadolivro.controllers.responses.BookResponse
 import com.mercadolivro.extension.toBookModel
-import com.mercadolivro.models.BookModel
+import com.mercadolivro.extension.toResponse
 import com.mercadolivro.services.BookService
 import com.mercadolivro.services.CustomerService
 import org.springframework.http.HttpStatus
@@ -18,28 +19,28 @@ class BookController(
 ) {
 
     @GetMapping
-    fun getBooks(): List<BookModel> {
-        return bookService.getBooks()
+    fun getBooks(): List<BookResponse> {
+        return bookService.getBooks().map { it.toResponse() }
     }
 
     @GetMapping("/active")
-    fun getActiveBooks(): ResponseEntity<List<BookModel>> {
+    fun getActiveBooks(): ResponseEntity<List<BookResponse>> {
         var books = bookService.getActiveBooks()
 
-        return ResponseEntity.ok(books)
+        return ResponseEntity.ok(books.map { it.toResponse() })
     }
 
     @GetMapping("/{bookId}")
-    fun getBookById(@PathVariable bookId: Long): BookModel {
-        return bookService.getBookById(bookId)
+    fun getBookById(@PathVariable bookId: Long): BookResponse {
+        return bookService.getBookById(bookId).toResponse()
     }
 
     @PostMapping
-    fun createBook(@RequestBody request: PostBookRequest): ResponseEntity<Any> {
+    fun createBook(@RequestBody request: PostBookRequest): ResponseEntity<BookResponse> {
         val customer = customerService.getCustomerById(request.customerId)
         var bookModel = bookService.create(request.toBookModel(customer))
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(bookModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookModel.toResponse());
     }
 
     @PutMapping("/{bookId}")
