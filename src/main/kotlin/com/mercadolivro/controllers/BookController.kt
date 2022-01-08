@@ -17,8 +17,8 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/books")
 class BookController(
-    var bookService: BookService,
-    var customerService: CustomerService
+    private val bookService: BookService,
+    private val customerService: CustomerService
 ) {
 
     @GetMapping
@@ -28,7 +28,7 @@ class BookController(
 
     @GetMapping("/active")
     fun getActiveBooks(@PageableDefault(page = 0, size = 15) pageable: Pageable): Page<BookResponse> {
-        var books = bookService.getActiveBooks(pageable)
+        val books = bookService.getActiveBooks(pageable)
 
         return books.map { it.toResponse() }
     }
@@ -42,7 +42,7 @@ class BookController(
     @ResponseStatus(HttpStatus.CREATED)
     fun createBook(@RequestBody @Valid request: PostBookRequest): BookResponse {
         val customer = customerService.getCustomerById(request.customerId)
-        var bookModel = bookService.create(request.toBookModel(customer))
+        val bookModel = bookService.create(request.toBookModel(customer))
 
         return bookModel.toResponse();
     }

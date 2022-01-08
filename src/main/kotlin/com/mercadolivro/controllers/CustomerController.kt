@@ -14,7 +14,7 @@ import javax.validation.Valid
 @RestController
 @RequestMapping("/customers")
 class CustomerController(
-    val customerService: CustomerService
+    private val customerService: CustomerService
 ) {
 
     @GetMapping
@@ -41,7 +41,7 @@ class CustomerController(
     fun updateCustomer(
         @PathVariable customerId: Long, @RequestBody @Valid customer: PutCustomerRequest
     ): ResponseEntity<Void> {
-        var oldCustomer = customerService.getCustomerById(customerId)
+        val oldCustomer = customerService.getCustomerById(customerId)
         customerService.update(customer.toCustomerModel(oldCustomer))
 
         return ResponseEntity.noContent().build()
