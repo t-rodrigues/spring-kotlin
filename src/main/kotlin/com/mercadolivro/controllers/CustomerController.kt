@@ -39,7 +39,8 @@ class CustomerController(
     fun updateCustomer(
         @PathVariable customerId: Long, @RequestBody customer: PutCustomerRequest
     ): ResponseEntity<Void> {
-        customerService.update(customer.toCustomerModel(customerId))
+        var oldCustomer = customerService.getCustomerById(customerId)
+        customerService.update(customer.toCustomerModel(oldCustomer))
 
         return ResponseEntity.noContent().build()
     }

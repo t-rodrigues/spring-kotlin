@@ -1,6 +1,7 @@
 package com.mercadolivro.services
 
 import com.mercadolivro.models.BookModel
+import com.mercadolivro.models.CustomerModel
 
 interface BookService {
 
@@ -15,5 +16,7 @@ interface BookService {
     fun update(bookModel: BookModel)
 
     fun delete(bookId: Long)
+
+    fun deleteByCustomer(customer: CustomerModel)
 
 }
