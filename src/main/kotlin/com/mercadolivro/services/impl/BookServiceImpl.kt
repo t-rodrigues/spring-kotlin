@@ -34,7 +34,7 @@ class BookServiceImpl(
 
     override fun delete(bookId: Long) {
         val book = getBookById(bookId)
-        book.status = BookStatus.DELETED
+        book.status = BookStatus.CANCELED
         update(book)
     }
 
