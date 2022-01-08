@@ -1,6 +1,7 @@
 package com.mercadolivro.services.impl
 
 import com.mercadolivro.enums.BookStatus
+import com.mercadolivro.exceptions.ObjectNotFoundException
 import com.mercadolivro.models.BookModel
 import com.mercadolivro.models.CustomerModel
 import com.mercadolivro.repositories.BookRepository
@@ -23,7 +24,7 @@ class BookServiceImpl(
     }
 
     override fun getBookById(bookId: Long): BookModel {
-        return bookRepository.findById(bookId).orElseThrow()
+        return bookRepository.findById(bookId).orElseThrow{ ObjectNotFoundException("Book not found with id: $bookId") }
     }
 
     override fun create(bookModel: BookModel): BookModel {

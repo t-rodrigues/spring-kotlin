@@ -1,6 +1,8 @@
 package com.mercadolivro.services.impl
 
 import com.mercadolivro.enums.CustomerStatus
+import com.mercadolivro.exceptions.BadRequestException
+import com.mercadolivro.exceptions.ObjectNotFoundException
 import com.mercadolivro.models.CustomerModel
 import com.mercadolivro.repositories.CustomerRepository
 import com.mercadolivro.services.BookService
@@ -9,8 +11,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class CustomerServiceImpl(
-    val customerRepository: CustomerRepository,
-    val bookService: BookService
+    val customerRepository: CustomerRepository, val bookService: BookService
 ) : CustomerService {
 
     override fun getCustomers(name: String?): List<CustomerModel> {
@@ -21,20 +22,18 @@ class CustomerServiceImpl(
     }
 
     override fun getCustomerById(customerId: Long): CustomerModel {
-        return customerRepository.findById(customerId).orElseThrow()
+        return customerRepository.findById(customerId)
+            .orElseThrow { ObjectNotFoundException("Customer $customerId not found") }
     }
 
     override fun create(customer: CustomerModel): CustomerModel {
         if (customerRepository.existsByEmail(customer.email)) {
-            throw Exception()
+            throw BadRequestException("Email already taken by another user")
         }
         return customerRepository.save(customer)
     }
 
     override fun update(customer: CustomerModel) {
-        if (!customerRepository.existsById(customer.id!!)) {
-            throw Exception()
-        }
         customerRepository.save(customer)
     }
 
