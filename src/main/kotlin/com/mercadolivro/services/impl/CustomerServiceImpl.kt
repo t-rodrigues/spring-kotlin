@@ -7,12 +7,14 @@ import com.mercadolivro.models.CustomerModel
 import com.mercadolivro.repositories.CustomerRepository
 import com.mercadolivro.services.BookService
 import com.mercadolivro.services.CustomerService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class CustomerServiceImpl(
     private val customerRepository: CustomerRepository,
-    private val bookService: BookService
+    private val bookService: BookService,
+    private val bcrypt: BCryptPasswordEncoder
 ) : CustomerService {
 
     override fun getCustomers(name: String?): List<CustomerModel> {
@@ -29,7 +31,8 @@ class CustomerServiceImpl(
 
     override fun create(customer: CustomerModel): CustomerModel {
         val customerCopy = customer.copy(
-            roles = setOf(Role.CUSTOMER)
+            roles = setOf(Role.CUSTOMER),
+            password = bcrypt.encode(customer.password)
         )
         return customerRepository.save(customerCopy)
     }

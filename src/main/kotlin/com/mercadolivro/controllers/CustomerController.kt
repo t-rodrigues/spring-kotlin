@@ -31,7 +31,7 @@ class CustomerController(
     }
 
     @PostMapping
-    fun createCustomer(@RequestBody @Valid customer: PostCustomerRequest): ResponseEntity<CustomerResponse> {
+    fun createCustomer(@Valid @RequestBody customer: PostCustomerRequest): ResponseEntity<CustomerResponse> {
         val customerModel = customerService.create(customer.toCustomerModel())
 
         return ResponseEntity.status(HttpStatus.CREATED).body(customerModel.toResponse())
