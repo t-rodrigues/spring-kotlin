@@ -15,4 +15,6 @@ interface BookRepository : JpaRepository<BookModel, Long> {
 
     fun findByCustomerAndStatus(customerModel: CustomerModel, status: BookStatus): List<BookModel>
 
+    fun findAllByIdInAndStatus(id: Set<Long>, status: BookStatus): List<BookModel>
+
 }

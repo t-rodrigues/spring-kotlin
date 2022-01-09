@@ -24,7 +24,8 @@ class BookServiceImpl(
     }
 
     override fun getBookById(bookId: Long): BookModel {
-        return bookRepository.findById(bookId).orElseThrow{ ObjectNotFoundException("Book not found with id: $bookId") }
+        return bookRepository.findById(bookId)
+            .orElseThrow { ObjectNotFoundException("Book not found with id: $bookId") }
     }
 
     override fun create(bookModel: BookModel): BookModel {
@@ -44,6 +45,15 @@ class BookServiceImpl(
     override fun deleteByCustomer(customer: CustomerModel) {
         val books = bookRepository.findByCustomerAndStatus(customer, BookStatus.ACTIVE)
         books.iterator().forEach { it.status = BookStatus.DELETED }
+        bookRepository.saveAll(books)
+    }
+
+    override fun getBooksByIds(bookIds: Set<Long>): List<BookModel> {
+        return bookRepository.findAllByIdInAndStatus(bookIds, BookStatus.ACTIVE)
+    }
+
+    override fun purchase(books: MutableList<BookModel>) {
+        books.forEach { it.status = BookStatus.SOLD }
         bookRepository.saveAll(books)
     }
 

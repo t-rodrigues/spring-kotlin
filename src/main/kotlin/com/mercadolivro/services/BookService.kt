@@ -21,4 +21,8 @@ interface BookService {
 
     fun deleteByCustomer(customer: CustomerModel)
 
+    fun getBooksByIds(bookIds: Set<Long>): List<BookModel>
+
+    fun purchase(books: MutableList<BookModel>)
+
 }

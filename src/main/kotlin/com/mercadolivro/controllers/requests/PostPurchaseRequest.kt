@@ -13,6 +13,6 @@ data class PostPurchaseRequest(
     val customerId: Long,
 
     @field:NotEmpty
-    val bookIds: Set<Long>
+    val books: Set<Long>
 
 )
