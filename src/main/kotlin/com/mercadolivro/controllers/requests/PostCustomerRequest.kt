@@ -5,11 +5,16 @@ import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
 
 data class PostCustomerRequest(
+
     @field:NotBlank
-    var name: String,
+    val name: String,
 
     @field:NotBlank
     @field:Email
     @field:EmailAvailable
-    var email: String
+    val email: String,
+
+    @field:NotBlank
+    val password: String
+
 )

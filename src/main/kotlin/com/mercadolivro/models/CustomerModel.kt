@@ -11,10 +11,13 @@ data class CustomerModel(
     var id: Long? = null,
 
     @Column
-    var name: String,
+    val name: String,
 
     @Column
-    var email: String,
+    val email: String,
+
+    @Column
+    val password: String,
 
     @Enumerated(EnumType.STRING)
     var status: CustomerStatus
