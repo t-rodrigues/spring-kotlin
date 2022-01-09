@@ -1,6 +1,7 @@
 package com.mercadolivro.services.impl
 
 import com.mercadolivro.enums.CustomerStatus
+import com.mercadolivro.enums.Role
 import com.mercadolivro.exceptions.ObjectNotFoundException
 import com.mercadolivro.models.CustomerModel
 import com.mercadolivro.repositories.CustomerRepository
@@ -27,7 +28,10 @@ class CustomerServiceImpl(
     }
 
     override fun create(customer: CustomerModel): CustomerModel {
-        return customerRepository.save(customer)
+        val customerCopy = customer.copy(
+            roles = setOf(Role.CUSTOMER)
+        )
+        return customerRepository.save(customerCopy)
     }
 
     override fun update(customer: CustomerModel) {
