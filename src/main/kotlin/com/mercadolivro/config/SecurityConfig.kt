@@ -2,6 +2,7 @@ package com.mercadolivro.config
 
 import com.mercadolivro.enums.Role
 import com.mercadolivro.repositories.CustomerRepository
+import com.mercadolivro.security.CustomAuthenticationEntryPoint
 import com.mercadolivro.security.JwtUtils
 import com.mercadolivro.security.filters.AuthenticationFilter
 import com.mercadolivro.security.filters.AuthorizationFilter
@@ -27,7 +28,8 @@ import org.springframework.web.filter.CorsFilter
 class SecurityConfig(
     private val customerRepository: CustomerRepository,
     private val userDetailsCustomService: UserDetailsCustomService,
-    private val jwtUtils: JwtUtils
+    private val jwtUtils: JwtUtils,
+    private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint
 ) : WebSecurityConfigurerAdapter() {
 
     private val PUBLIC_MATCHERS = arrayOf<String>()
@@ -62,6 +64,7 @@ class SecurityConfig(
 
         http.addFilter(AuthenticationFilter(authenticationManager(), customerRepository, jwtUtils))
         http.addFilter(AuthorizationFilter(authenticationManager(), jwtUtils, userDetailsCustomService))
+        http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint)
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }

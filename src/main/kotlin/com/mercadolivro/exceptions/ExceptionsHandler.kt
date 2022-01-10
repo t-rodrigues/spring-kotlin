@@ -4,11 +4,11 @@ import com.mercadolivro.controllers.responses.ErrorResponse
 import com.mercadolivro.controllers.responses.FieldErrorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
-import java.time.Instant
 
 @RestControllerAdvice
 class ExceptionsHandler {
@@ -34,6 +34,11 @@ class ExceptionsHandler {
             errors = ex.bindingResult.fieldErrors.map { FieldErrorResponse(it.defaultMessage ?: "invalid", it.field) })
     }
 
+    @ExceptionHandler(AccessDeniedException::class)
+    fun handleAccessDeniedException(ex: AccessDeniedException, request: WebRequest): ResponseEntity<ErrorResponse> {
+        return generateErrorResponse(status = HttpStatus.FORBIDDEN, ex = ex, path = request.contextPath)
+    }
+
     private fun generateErrorResponse(
         status: HttpStatus,
         ex: Exception,
@@ -42,14 +47,12 @@ class ExceptionsHandler {
         errors: List<FieldErrorResponse>? = null
     ): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(
-            Instant.now(),
             status = status.value(),
             error = ex::class.simpleName.toString(),
             path = path,
             message = message ?: ex.message.toString(),
             errors = errors
         )
-
         return ResponseEntity.status(status).body(errorResponse)
     }
 
