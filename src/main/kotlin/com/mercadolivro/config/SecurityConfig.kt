@@ -1,8 +1,9 @@
 package com.mercadolivro.config
 
+import com.mercadolivro.enums.Role
 import com.mercadolivro.repositories.CustomerRepository
-import com.mercadolivro.security.filters.AuthenticationFilter
 import com.mercadolivro.security.JwtUtils
+import com.mercadolivro.security.filters.AuthenticationFilter
 import com.mercadolivro.security.filters.AuthorizationFilter
 import com.mercadolivro.services.UserDetailsCustomService
 import org.springframework.context.annotation.Bean
@@ -23,7 +24,9 @@ class SecurityConfig(
     private val jwtUtils: JwtUtils
 ) : WebSecurityConfigurerAdapter() {
 
+    private val PUBLIC_MATCHERS = arrayOf<String>()
     private val PUBLIC_POST_MATCHERS = arrayOf("/customers")
+    private val ADMIN_MATCHERS = arrayOf("/admin/**")
 
     @Bean
     fun bCrypt(): BCryptPasswordEncoder {
@@ -33,7 +36,9 @@ class SecurityConfig(
     override fun configure(http: HttpSecurity) {
         http.cors().and().csrf().disable()
         http.authorizeRequests()
+            .antMatchers(*PUBLIC_MATCHERS).permitAll()
             .antMatchers(HttpMethod.POST, *PUBLIC_POST_MATCHERS).permitAll()
+            .antMatchers(*ADMIN_MATCHERS).hasAuthority(Role.ADMIN.description)
             .anyRequest().authenticated()
 
         http.addFilter(AuthenticationFilter(authenticationManager(), customerRepository, jwtUtils))
