@@ -3,11 +3,12 @@ package com.mercadolivro.controllers
 import com.mercadolivro.controllers.requests.PostBookRequest
 import com.mercadolivro.controllers.requests.PutBookRequest
 import com.mercadolivro.controllers.responses.BookResponse
+import com.mercadolivro.controllers.responses.PageResponse
 import com.mercadolivro.extension.toBookModel
+import com.mercadolivro.extension.toPageResponse
 import com.mercadolivro.extension.toResponse
 import com.mercadolivro.services.BookService
 import com.mercadolivro.services.CustomerService
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.http.HttpStatus
@@ -22,15 +23,15 @@ class BookController(
 ) {
 
     @GetMapping
-    fun getBooks(@PageableDefault(page = 0, size = 15) pageable: Pageable): Page<BookResponse> {
-        return bookService.getBooks(pageable).map { it.toResponse() }
+    fun getBooks(@PageableDefault(page = 0, size = 15) pageable: Pageable): PageResponse<BookResponse> {
+        return bookService.getBooks(pageable).map { it.toResponse() }.toPageResponse()
     }
 
     @GetMapping("/active")
-    fun getActiveBooks(@PageableDefault(page = 0, size = 15) pageable: Pageable): Page<BookResponse> {
+    fun getActiveBooks(@PageableDefault(page = 0, size = 15) pageable: Pageable): PageResponse<BookResponse> {
         val books = bookService.getActiveBooks(pageable)
 
-        return books.map { it.toResponse() }
+        return books.map { it.toResponse() }.toPageResponse()
     }
 
     @GetMapping("/{bookId}")

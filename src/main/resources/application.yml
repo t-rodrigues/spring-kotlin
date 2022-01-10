@@ -6,3 +6,7 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+jwt:
+  secret: ${JWT_SECRET:MySuperSecretJwt}
+  expiration: ${JWT_EXPIRATION:86400000}
