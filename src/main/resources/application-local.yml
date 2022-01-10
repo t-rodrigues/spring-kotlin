@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ${DATABASE_URL}?createDatabaseIfNotExists=true
+    url: ${DATABASE_URL}
     username: ${DATABASE_USER}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -9,3 +9,6 @@ spring:
     properties:
       hibernate:
         '[format_sql]': true
+jwt:
+  secret: ${JWT_SECRET:MySuperSecretJwt}
+  expiration: ${JWT_EXPIRATION:86400000}

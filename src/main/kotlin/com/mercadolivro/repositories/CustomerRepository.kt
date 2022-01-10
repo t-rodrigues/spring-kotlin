@@ -11,4 +11,6 @@ interface CustomerRepository : JpaRepository<CustomerModel, Long> {
 
     fun findAllByNameIsContainingIgnoreCase(text: String): List<CustomerModel>
 
+    fun findByEmail(email: String): CustomerModel?
+
 }
