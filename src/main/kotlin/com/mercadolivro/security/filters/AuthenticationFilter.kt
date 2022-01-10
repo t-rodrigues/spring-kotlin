@@ -1,9 +1,11 @@
-package com.mercadolivro.security
+package com.mercadolivro.security.filters
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.mercadolivro.controllers.requests.AuthRequest
 import com.mercadolivro.exceptions.AuthException
 import com.mercadolivro.repositories.CustomerRepository
+import com.mercadolivro.security.JwtUtils
+import com.mercadolivro.security.UserCustomDetails
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -24,7 +26,6 @@ class AuthenticationFilter(
             val id = customerRepository.findByEmail(authRequest.email)?.id
             val authToken = UsernamePasswordAuthenticationToken(id, authRequest.password)
             return authenticationManager.authenticate(authToken)
-
         } catch (ex: Exception) {
             throw AuthException("Authentication failed")
         }
