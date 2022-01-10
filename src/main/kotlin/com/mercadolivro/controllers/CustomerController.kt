@@ -5,6 +5,8 @@ import com.mercadolivro.controllers.requests.PutCustomerRequest
 import com.mercadolivro.controllers.responses.CustomerResponse
 import com.mercadolivro.extension.toCustomerModel
 import com.mercadolivro.extension.toResponse
+import com.mercadolivro.security.AdminCanOnlyAccess
+import com.mercadolivro.security.UserCanOnlyAccessTheirOwnResource
 import com.mercadolivro.services.CustomerService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,12 +20,14 @@ class CustomerController(
 ) {
 
     @GetMapping
+    @AdminCanOnlyAccess
     fun getCustomers(@RequestParam name: String?): ResponseEntity<List<CustomerResponse>> {
         val customers = this.customerService.getCustomers(name)
         return ResponseEntity.ok(customers.map { it.toResponse() })
     }
 
     @GetMapping("/{customerId}")
+    @UserCanOnlyAccessTheirOwnResource
     fun getCustomerById(@PathVariable customerId: Long): ResponseEntity<CustomerResponse> {
         val customerModel = customerService.getCustomerById(customerId)
 
@@ -38,6 +42,7 @@ class CustomerController(
     }
 
     @PutMapping("/{customerId}")
+    @UserCanOnlyAccessTheirOwnResource
     fun updateCustomer(
         @PathVariable customerId: Long, @RequestBody @Valid customer: PutCustomerRequest
     ): ResponseEntity<Void> {
@@ -48,6 +53,7 @@ class CustomerController(
     }
 
     @DeleteMapping("/{customerId}")
+    @UserCanOnlyAccessTheirOwnResource
     fun deleteCustomer(@PathVariable customerId: Long): ResponseEntity<Void> {
         customerService.delete(customerId)
 
