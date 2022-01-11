@@ -15,6 +15,7 @@ import io.mockk.just
 import io.mockk.runs
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -168,6 +169,19 @@ internal class CustomerServiceImplTest {
         val emailAvailable = customerServiceImpl.emailAvailable(email)
 
         assert(emailAvailable)
+
+        verify(exactly = 1) { customerRepository.existsByEmail(email) }
+    }
+
+    @Test
+    fun `should return false when email unavailable`() {
+        val email = "${Random().nextLong()}@email.com"
+
+        every { customerRepository.existsByEmail(email) } returns true
+
+        val emailAvailable = customerServiceImpl.emailAvailable(email)
+
+        assertFalse(emailAvailable)
 
         verify(exactly = 1) { customerRepository.existsByEmail(email) }
     }
