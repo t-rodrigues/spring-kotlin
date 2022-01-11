@@ -13,6 +13,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -97,6 +98,19 @@ internal class CustomerServiceImplTest {
 
         assertThrows<ObjectNotFoundException> { customerServiceImpl.getCustomerById(id) }
         verify(exactly = 1) { customerRepository.findById(id) }
+    }
+
+    @Test
+    fun `should update customer`() {
+        val id = Random().nextLong()
+        val fakeCustomer = buildCustomer(id = id)
+
+        every { customerRepository.existsById(id) } returns true
+        every { customerRepository.save(fakeCustomer) } returns fakeCustomer
+
+        assertDoesNotThrow { customerServiceImpl.update(fakeCustomer) }
+        verify(exactly = 1) { customerRepository.existsById(id) }
+        verify(exactly = 1) { customerRepository.save(fakeCustomer) }
     }
 
     private fun buildCustomer(
