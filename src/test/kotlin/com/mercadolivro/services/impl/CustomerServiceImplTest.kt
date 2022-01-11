@@ -129,6 +129,23 @@ internal class CustomerServiceImplTest {
         verify(exactly = 0) { customerRepository.save(any()) }
     }
 
+    @Test
+    fun `should delete customer`() {
+        val id = Random().nextLong()
+        val fakeCustomer = buildCustomer(id)
+        val expectedCustomer = fakeCustomer.copy(status = CustomerStatus.INACTIVE)
+
+        every { customerServiceImpl.getCustomerById(id) } returns fakeCustomer
+        every { bookService.deleteByCustomer(fakeCustomer) } just runs
+        every { customerRepository.save(expectedCustomer) } returns expectedCustomer
+
+        assertDoesNotThrow { customerServiceImpl.delete(id) }
+
+        verify(exactly = 1) { bookService.deleteByCustomer(fakeCustomer) }
+        verify(exactly = 1) { customerRepository.save(expectedCustomer) }
+        verify(exactly = 1) { customerServiceImpl.getCustomerById(id) }
+    }
+
     private fun buildCustomer(
         id: Long? = null,
         name: String? = "customer-name",
