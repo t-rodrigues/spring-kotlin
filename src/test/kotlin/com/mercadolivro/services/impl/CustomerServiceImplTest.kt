@@ -141,9 +141,22 @@ internal class CustomerServiceImplTest {
 
         assertDoesNotThrow { customerServiceImpl.delete(id) }
 
+        verify(exactly = 1) { customerServiceImpl.getCustomerById(id) }
         verify(exactly = 1) { bookService.deleteByCustomer(fakeCustomer) }
         verify(exactly = 1) { customerRepository.save(expectedCustomer) }
+    }
+
+    @Test
+    fun `should delete throws when invalid id was provided`() {
+        val id = Random().nextLong()
+
+        every { customerServiceImpl.getCustomerById(id) } throws ObjectNotFoundException("")
+
+        assertThrows<ObjectNotFoundException> { customerServiceImpl.delete(id) }
+
         verify(exactly = 1) { customerServiceImpl.getCustomerById(id) }
+        verify(exactly = 0) { bookService.deleteByCustomer(any()) }
+        verify(exactly = 0) { customerRepository.save(any()) }
     }
 
     private fun buildCustomer(
