@@ -44,10 +44,10 @@ class CustomerController(
     @PutMapping("/{customerId}")
     @UserCanOnlyAccessTheirOwnResource
     fun updateCustomer(
-        @PathVariable customerId: Long, @RequestBody @Valid customer: PutCustomerRequest
+        @PathVariable customerId: Long, @RequestBody @Valid customerRequest: PutCustomerRequest
     ): ResponseEntity<Void> {
         val oldCustomer = customerService.getCustomerById(customerId)
-        customerService.update(customer.toCustomerModel(oldCustomer))
+        customerService.update(customerRequest.toCustomerModel(oldCustomer))
 
         return ResponseEntity.noContent().build()
     }

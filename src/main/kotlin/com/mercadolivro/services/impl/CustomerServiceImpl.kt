@@ -38,6 +38,9 @@ class CustomerServiceImpl(
     }
 
     override fun update(customer: CustomerModel) {
+        if (!customerRepository.existsById(customer.id!!)) {
+            throw ObjectNotFoundException("Customer ${customer.id} not found")
+        }
         customerRepository.save(customer)
     }
 
