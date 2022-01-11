@@ -2,6 +2,7 @@ package com.mercadolivro.services.impl
 
 import com.mercadolivro.enums.CustomerStatus
 import com.mercadolivro.enums.Role
+import com.mercadolivro.exceptions.ObjectNotFoundException
 import com.mercadolivro.models.CustomerModel
 import com.mercadolivro.repositories.CustomerRepository
 import com.mercadolivro.services.BookService
@@ -12,6 +13,7 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.util.*
@@ -84,6 +86,16 @@ internal class CustomerServiceImplTest {
         val customer = customerServiceImpl.getCustomerById(id)
 
         assertEquals(fakeCustomer, customer)
+        verify(exactly = 1) { customerRepository.findById(id) }
+    }
+
+    @Test
+    fun `should throw when invalid id was provided`() {
+        val id = Random().nextLong()
+
+        every { customerRepository.findById(id) } returns Optional.empty()
+
+        assertThrows<ObjectNotFoundException> { customerServiceImpl.getCustomerById(id) }
         verify(exactly = 1) { customerRepository.findById(id) }
     }
 
