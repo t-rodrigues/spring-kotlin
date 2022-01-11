@@ -9,7 +9,10 @@ import com.mercadolivro.services.BookService
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
+import io.mockk.impl.annotations.SpyK
 import io.mockk.junit5.MockKExtension
+import io.mockk.just
+import io.mockk.runs
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -32,6 +35,7 @@ internal class CustomerServiceImplTest {
     private lateinit var bcrypt: BCryptPasswordEncoder
 
     @InjectMockKs
+    @SpyK
     private lateinit var customerServiceImpl: CustomerServiceImpl
 
     @Test
@@ -91,7 +95,7 @@ internal class CustomerServiceImplTest {
     }
 
     @Test
-    fun `should throw when invalid id was provided`() {
+    fun `should getCustomerByID throw when invalid id was provided`() {
         val id = Random().nextLong()
 
         every { customerRepository.findById(id) } returns Optional.empty()
@@ -111,6 +115,18 @@ internal class CustomerServiceImplTest {
         assertDoesNotThrow { customerServiceImpl.update(fakeCustomer) }
         verify(exactly = 1) { customerRepository.existsById(id) }
         verify(exactly = 1) { customerRepository.save(fakeCustomer) }
+    }
+
+    @Test
+    fun `should update throw when invalid id was provided`() {
+        val id = Random().nextLong()
+        val fakeCustomer = buildCustomer(id)
+
+        every { customerRepository.existsById(id) } returns false
+
+        assertThrows<ObjectNotFoundException> { customerServiceImpl.update(fakeCustomer) }
+        verify(exactly = 1) { customerRepository.existsById(id) }
+        verify(exactly = 0) { customerRepository.save(any()) }
     }
 
     private fun buildCustomer(
