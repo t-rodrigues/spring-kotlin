@@ -159,6 +159,19 @@ internal class CustomerServiceImplTest {
         verify(exactly = 0) { customerRepository.save(any()) }
     }
 
+    @Test
+    fun `should return true when email available`() {
+        val email = "${Random().nextLong()}@email.com"
+
+        every { customerRepository.existsByEmail(email) } returns false
+
+        val emailAvailable = customerServiceImpl.emailAvailable(email)
+
+        assert(emailAvailable)
+
+        verify(exactly = 1) { customerRepository.existsByEmail(email) }
+    }
+
     private fun buildCustomer(
         id: Long? = null,
         name: String? = "customer-name",
