@@ -58,6 +58,22 @@ internal class CustomerServiceImplTest {
         verify(exactly = 0) { customerRepository.findAll() }
     }
 
+    @Test
+    fun `should create customer and encrypt password`() {
+        val initialPassword = Math.random().toString()
+        val fakeCustomer = buildCustomer(password = initialPassword)
+        val fakePassword = UUID.randomUUID().toString()
+        val fakeCustomerEncrypted = fakeCustomer.copy(password = fakePassword)
+
+        every { customerRepository.save(fakeCustomerEncrypted) } returns fakeCustomer
+        every { bcrypt.encode(initialPassword) } returns fakePassword
+
+        val customer = customerServiceImpl.create(fakeCustomer)
+        assertEquals(fakeCustomer, customer)
+        verify(exactly = 1) { customerRepository.save(fakeCustomerEncrypted) }
+        verify(exactly = 1) { bcrypt.encode(fakeCustomer.password) }
+    }
+
     private fun buildCustomer(
         id: Long? = null,
         name: String? = "customer-name",
