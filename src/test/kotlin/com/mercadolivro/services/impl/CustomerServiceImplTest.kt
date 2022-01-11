@@ -44,10 +44,24 @@ internal class CustomerServiceImplTest {
         verify(exactly = 0) { customerRepository.findAllByNameIsContainingIgnoreCase(any()) }
     }
 
+    @Test
+    fun `should return customers when name is provided`() {
+        val name = UUID.randomUUID().toString()
+        val fakeCustomers = listOf(buildCustomer(), buildCustomer())
+
+        every { customerRepository.findAllByNameIsContainingIgnoreCase(name) } returns fakeCustomers
+
+        val customers = customerServiceImpl.getCustomers(name)
+
+        assertEquals(fakeCustomers, customers)
+        verify(exactly = 1) { customerRepository.findAllByNameIsContainingIgnoreCase(name) }
+        verify(exactly = 0) { customerRepository.findAll() }
+    }
+
     private fun buildCustomer(
         id: Long? = null,
-        name: String? = "John Doe",
-        email: String? = "john-${UUID.randomUUID()}@mail.com",
+        name: String? = "customer-name",
+        email: String? = "${UUID.randomUUID()}@mail.com",
         password: String = "password"
     ) = CustomerModel(
         id = id,
